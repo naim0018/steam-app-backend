@@ -16,7 +16,6 @@ const getSteamGames = catchAsync(async (req: Request, res: Response) => {
     const currentTime = Date.now();
     if (!cachedGames || currentTime - lastCacheTime > CACHE_DURATION) {
       const response = await axios.get("https://api.steampowered.com/ISteamApps/GetAppList/v2/");
-      console.log(response.data.applist.apps)
       // Skip the first 38 games as they are test entries
       cachedGames = response.data.applist.apps.slice(38);
       lastCacheTime = currentTime;
@@ -140,7 +139,49 @@ const getSteamGameDetails = catchAsync(async (req: Request, res: Response) => {
   }
 });
 
+// Add this new controller function to your existing file
+const searchSteamGames = catchAsync(async (req: Request, res: Response) => {
+  try {
+    const { term } = req.query;
+    
+    if (!term) {
+      return sendResponse(res, {
+        statusCode: StatusCodes.BAD_REQUEST,
+        success: false,
+        message: "Search term is required",
+        data: "Please provide a search term"
+      });
+    }
+    
+    const response = await axios.get(`https://store.steampowered.com/api/storesearch?term=${term}&l=english&cc=US`);
+    
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: "Search results retrieved successfully",
+      data: response.data.items || [],
+      meta: {
+        page: 1,
+        limit: response.data.items?.length || 0,
+        totalGames: response.data.total || 0,
+        totalPages: Math.ceil((response.data.total || 0) / 24),
+        hasNextPage: false,
+        hasPrevPage: false
+      }
+    });
+  } catch (error: any) {
+    sendResponse(res, {
+      statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+      success: false,
+      message: "Failed to search Steam games",
+      data: error.message || "Unknown error"
+    });
+  }
+});
+
+// Update the exported controller object
 export const SteamController = {
   getSteamGames,
-  getSteamGameDetails
+  getSteamGameDetails,
+  searchSteamGames
 };

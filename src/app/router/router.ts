@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { SteamRoute } from "../../modules/Steam/steam.route";
+import SteamRoute from "../../modules/Steam/steam.route";
 
 const router = Router();
 

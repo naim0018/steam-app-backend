@@ -3,10 +3,13 @@ import { SteamController } from "./steam.controller";
 
 const router = Router();
 
-// Get all games with pagination and search
+// Get all games with pagination
 router.get('/', SteamController.getSteamGames);
 
-// Get details for a specific game
+// Add search endpoint
+router.get('/search', SteamController.searchSteamGames);
+
+// Get game details by appId
 router.get('/:appId', SteamController.getSteamGameDetails);
 
-export const SteamRoute = router;
+export default router;
