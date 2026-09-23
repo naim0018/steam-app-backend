@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts --no-deprecation",
-    "start": "node dist/server.js",
-    "build": "tsc"
+    "dev": "node init && ts-node-dev --respawn --transpile-only src/server.ts --no-deprecation",
+    "start": "node init && node dist/server.js",
+    "build": "node init && tsc"
   },
   "author": "",
   "license": "ISC",
