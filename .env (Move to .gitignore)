@@ -1,3 +1,0 @@
-
-# Exclude local environment configs
-.env*
